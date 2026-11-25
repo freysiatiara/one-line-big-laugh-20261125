@@ -12,6 +12,17 @@ import os
 LINE = "I proved I'm human by failing the CAPTCHA three times. The robot passed on the first try."
 
 
+def validate_line(line):
+    """Guard: the entry must be a single non-empty line of 1-200 chars."""
+    if not isinstance(line, str) or not line.strip():
+        raise ValueError("entry line must be a non-empty string")
+    if not 1 <= len(line.strip()) <= 200:
+        raise ValueError("entry line must be 1-200 characters after stripping")
+    if "\n" in line or "\r" in line:
+        raise ValueError("entry line must be a single line (no newline characters)")
+    return line
+
+
 def resolve_output_path():
     explicit = os.environ.get("ENTRY_OUTPUT")
     if explicit:
@@ -26,6 +37,7 @@ def resolve_output_path():
 
 
 def main():
+    validate_line(LINE)
     path = resolve_output_path()
     directory = os.path.dirname(path)
     if directory:
